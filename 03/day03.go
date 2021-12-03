@@ -1,6 +1,7 @@
 package main
 
 import (
+    "math"
     "strconv"
 
     "github.com/deosjr/adventofcode2021/lib"
@@ -26,13 +27,7 @@ func getCommon(in []uint64) uint64 {
 }
 
 func inv(in uint64) uint64 {
-    var out uint64
-    for i:=0; i<bitlength; i++ {
-        if (in>>i)&1 == 0 {
-            out += 1<<i
-        }
-    }
-    return out
+    return in^uint64(math.Exp2(float64(bitlength))-1)
 }
 
 func part2(input []uint64, inverse bool) uint64 {
@@ -50,12 +45,12 @@ func part2(input []uint64, inverse bool) uint64 {
             }
         }
         if len(next) == 1 {
-            return next[0]
+            break
         }
         prev = next
         next = []uint64{}
     }
-    panic("incorrect")
+    return next[0]
 }
 
 func main() {
