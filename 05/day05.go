@@ -27,27 +27,6 @@ func main() {
     for _, line := range input {
         sx,sy := line.start.x, line.start.y
         ex,ey := line.end.x, line.end.y
-        if sx == ex {
-            if ey < sy {
-                sy, ey = ey, sy
-            }
-            for y:=sy; y<=ey; y++ {
-                oceanfloor[coord{sx, y}] += 1
-                oceanfloorp2[coord{sx, y}] += 1
-            }
-            continue
-        }
-        if sy == ey {
-            if ex < sx {
-                sx, ex = ex, sx
-            }
-            for x:=sx; x<=ex; x++ {
-                oceanfloor[coord{x, sy}] += 1
-                oceanfloorp2[coord{x, sy}] += 1
-            }
-            continue
-        }
-        //diagonal
         dx, dy := 1, 1
         if sx > ex {
             dx = -1
@@ -55,9 +34,18 @@ func main() {
         if sy > ey {
             dy = -1
         }
+        if sx == ex {
+            dx = 0
+        }
+        if sy == ey {
+            dy = 0
+        }
         for {
+            if dx == 0 || dy == 0 {
+                oceanfloor[coord{sx, sy}] += 1
+            }
             oceanfloorp2[coord{sx, sy}] += 1
-            if sx == ex {
+            if sx == ex && sy == ey {
                 break
             }
             sx += dx
