@@ -5,17 +5,14 @@ import (
     "github.com/deosjr/adventofcode2021/lib"
 )
 
-func simDay(before map[int64]int64) map[int64]int64 {
-    after := map[int64]int64{}
-    for k, v := range before {
-        if k == 0 {
-            after[6] += v
-            after[8] = v
-            continue
-        }
-        after[k-1] += v
+func simulateDay(fish map[int64]int64) {
+    temp := fish[0]
+    var i int64
+    for i=1; i<=8; i++ {
+        fish[i-1] = fish[i]
     }
-    return after
+    fish[8] = temp
+    fish[6] += temp
 }
 
 func main() {
@@ -25,7 +22,7 @@ func main() {
         input[n] += 1
     }
     for i:=0;i<80;i++ {
-        input = simDay(input)
+        simulateDay(input)
     }
     var p1 int64
     for _, v := range input {
@@ -35,7 +32,7 @@ func main() {
     lib.WritePart1("%d", p1)
 
     for i:=0;i<256-80;i++ {
-        input = simDay(input)
+        simulateDay(input)
     }
     var p2 int64
     for _, v := range input {
