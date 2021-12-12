@@ -23,6 +23,10 @@ run :-
     length(Paths, Ans),
     write(Ans).
 
+small_cave(S) :-
+    string_code(1, S, C),
+    char_type(C, lower).
+
 path(From, To, Path) :-
     From = [H|T],
     cave(H, Next),
@@ -31,9 +35,8 @@ path(From, To, Path) :-
     ->
         reverse([To|From], Path)
     ;
-        string_code(1, Next, C),
         (
-            char_type(C, lower)
+            small_cave(Next)
         ->
             not(member(Next, T))
         ;
@@ -67,6 +70,10 @@ run :-
     length(Paths, Ans),
     write(Ans).
 
+small_cave(S) :-
+    string_code(1, S, C),
+    char_type(C, lower).
+
 path(From, To, Doubled, Path) :-
     From = [H|T],
     cave(H, Next),
@@ -76,9 +83,8 @@ path(From, To, Doubled, Path) :-
     ->
         reverse([To|From], Path)
     ;
-        string_code(1, Next, C),
         (
-            char_type(C, lower)
+            small_cave(Next)
         ->
             (
                 Doubled = true
