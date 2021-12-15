@@ -47,3 +47,6 @@ go13:
 
 go14:
 	@go run 14/day14.go
+
+go15:
+	@go run 15/day15.go
