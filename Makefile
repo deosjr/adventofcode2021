@@ -1,5 +1,5 @@
 all:
-	@for n in $$(seq -f "%02g" 1 14); do \
+	@for n in $$(seq -f "%02g" 1 16); do \
 		echo "$$n\n--------"; \
 		echo "Go"; \
 		\time go run $$n/day$$n.go; \
@@ -50,3 +50,6 @@ go14:
 
 go15:
 	@go run 15/day15.go
+
+go16:
+	@go run 16/day16.go
