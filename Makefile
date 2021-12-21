@@ -65,3 +65,6 @@ go19:
 
 go20:
 	@go run 20/day20.go
+
+go21:
+	@go run 21/day21.go
