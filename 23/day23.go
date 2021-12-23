@@ -148,20 +148,23 @@ func recurse(amphipodmap map[coord]int, amphipods []*amphipod, a *amphipod, lenH
 }
 
 func solve(amphipodmap map[coord]int, amphipods []*amphipod, lenHallway, roomSize int, sofar []step) ([]step, bool) {
+    if ans, ok := fromCache(amphipods, roomSize); ok {
+        return ans.ans, ans.ok
+    }
     c := cost(sofar)
     if c >= min {
-        return nil, false
+        return toCache(amphipods, roomSize, nil, false)
     }
     // if we are in a correct configuration, return
     if organized(amphipodmap, roomSize) {
         if c < min {
             min = c
-            return sofar, true
+            return toCache(amphipods, roomSize, sofar, true)
         }
-        return nil, false
+        return toCache(amphipods, roomSize, nil, false)
     }
     if c + mincostremaining(amphipodmap, roomSize) >= min {
-        return nil, false
+        return toCache(amphipods, roomSize, nil, false)
     }
 
     // else take all possible steps, and find best answer recursively
@@ -212,12 +215,12 @@ func solve(amphipodmap map[coord]int, amphipods []*amphipod, lenHallway, roomSiz
         answer = recurse(amphipodmap, amphipods, a, lenHallway, roomSize, newstep, answer, sofar)
     }
     if cost(answer) > min {
-        return nil, false
+        return toCache(amphipods, roomSize, nil, false)
     }
     if answer == nil {
-        return nil, false
+        return toCache(amphipods, roomSize, nil, false)
     }
-    return answer, true
+    return toCache(amphipods, roomSize, answer, true)
 }
 
 func solveP1(amphipods []*amphipod, hallway int) int {
@@ -283,4 +286,121 @@ func main() {
     min = 9999999
     p2 := solveP2(amphipods, hallway)
     lib.WritePart2("%d", p2)
+}
+
+var cachep1 = map[inp1]out{}
+
+type inp1 struct {
+    a1 amphipod
+    a2 amphipod
+    a3 amphipod
+    a4 amphipod
+    a5 amphipod
+    a6 amphipod
+    a7 amphipod
+    a8 amphipod
+}
+
+var cachep2 = map[inp2]out{}
+
+type inp2 struct {
+    a1 amphipod
+    a2 amphipod
+    a3 amphipod
+    a4 amphipod
+    a5 amphipod
+    a6 amphipod
+    a7 amphipod
+    a8 amphipod
+    a9 amphipod
+    a10 amphipod
+    a11 amphipod
+    a12 amphipod
+    a13 amphipod
+    a14 amphipod
+    a15 amphipod
+    a16 amphipod
+}
+
+type out struct {
+    ans []step
+    ok  bool
+}
+
+func toCache(amphipods []*amphipod, roomSize int, ans []step, ok bool) ([]step, bool) {
+    if roomSize == 2 {
+        in := inp1{
+            a1: *amphipods[0],
+            a2: *amphipods[1],
+            a3: *amphipods[2],
+            a4: *amphipods[3],
+            a5: *amphipods[4],
+            a6: *amphipods[5],
+            a7: *amphipods[6],
+            a8: *amphipods[7],
+        }
+        cachep1[in] = out{ans, ok}
+    }
+    if roomSize == 4 {
+        in := inp2{
+            a1: *amphipods[0],
+            a2: *amphipods[1],
+            a3: *amphipods[2],
+            a4: *amphipods[3],
+            a5: *amphipods[4],
+            a6: *amphipods[5],
+            a7: *amphipods[6],
+            a8: *amphipods[7],
+            a9: *amphipods[8],
+            a10: *amphipods[9],
+            a11: *amphipods[10],
+            a12: *amphipods[11],
+            a13: *amphipods[12],
+            a14: *amphipods[13],
+            a15: *amphipods[14],
+            a16: *amphipods[15],
+        }
+        cachep2[in] = out{ans, ok}
+    }
+    return ans, ok
+}
+
+func fromCache(amphipods []*amphipod, roomSize int) (out, bool) {
+    if roomSize == 2 {
+        in := inp1{
+            a1: *amphipods[0],
+            a2: *amphipods[1],
+            a3: *amphipods[2],
+            a4: *amphipods[3],
+            a5: *amphipods[4],
+            a6: *amphipods[5],
+            a7: *amphipods[6],
+            a8: *amphipods[7],
+        }
+        o, ok := cachep1[in]
+        return o, ok
+    }
+    if roomSize == 4 {
+        in := inp2{
+            a1: *amphipods[0],
+            a2: *amphipods[1],
+            a3: *amphipods[2],
+            a4: *amphipods[3],
+            a5: *amphipods[4],
+            a6: *amphipods[5],
+            a7: *amphipods[6],
+            a8: *amphipods[7],
+            a9: *amphipods[8],
+            a10: *amphipods[9],
+            a11: *amphipods[10],
+            a12: *amphipods[11],
+            a13: *amphipods[12],
+            a14: *amphipods[13],
+            a15: *amphipods[14],
+            a16: *amphipods[15],
+        }
+        o, ok := cachep2[in]
+        return o, ok
+    }
+    return out{}, false
 }
