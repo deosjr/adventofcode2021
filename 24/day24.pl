@@ -16,18 +16,30 @@ find(V) :-
     func(V),
     label(V).
 
-run :-
+run2 :-
     findall(V, find(V), List),
     length(List, X),
     writeln(X).
 
-run2 :-
+run :-
+    p1,
+    p2.
+
+p1 :-
     length(V, 14),
     V ins 1..9,
     func2(V),
     V = [A,B,C,D,E,F,G,H,I,J,K,L,M,N],
-    label(V),
-    writeln(V), fail.
+    labeling([up], V),
+    format("Part 1: ~w\n", [V]).
+
+p2 :-
+    length(V, 14),
+    V ins 1..9,
+    func2(V),
+    V = [A,B,C,D,E,F,G,H,I,J,K,L,M,N],
+    labeling([down], V),
+    format("Part 2: ~w\n", [V]).
     
 func2(V) :-
 	V = [A,B,C,D,E,F,G,H,I,J,K,L,M,N],
