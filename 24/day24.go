@@ -7,100 +7,6 @@ import (
     "github.com/deosjr/adventofcode2021/lib"
 )
 
-// NOTES:
-// inp only ever takes w and w is never otherwise updated
-// x and y are local vars per input
-// z is kept between inputs
-// z can only be 0 if none of the if statements pass (?)
-
-// written by hand after looking at effective lines
-func validate(n int64) bool {
-    w := n % 10
-    n = n / 10
-    z := w+12
-    w = n % 10
-    n = n / 10
-    z *= 26
-    z += w+9
-    w = n % 10
-    n = n / 10
-    z *= 26
-    z += w+8
-    w = n % 10
-    n = n / 10
-    x := (z % 26) - 8
-    z = z / 26
-    if x != w {
-        z *= 26
-        z += w+3
-    }
-    w = n % 10
-    n = n / 10
-    z *= 26
-    z += w
-    w = n % 10
-    n = n / 10
-    z *= 26
-    z += w+11
-    w = n % 10
-    n = n / 10
-    z *= 26
-    z += w+10
-    w = n % 10
-    n = n / 10
-    x = (z % 26) - 11
-    z = z / 26
-    if x != w {
-        z *= 26
-        z += w+13
-    }
-    w = n % 10
-    n = n / 10
-    z *= 26
-    z += w+3
-    w = n % 10
-    n = n / 10
-    x = (z % 26) -1
-    z = z / 26
-    if x != w {
-        z *= 26
-        z += w+10
-    }
-    w = n % 10
-    n = n / 10
-    x = (z % 26) - 8
-    z = z / 26
-    if x != w {
-        z *= 26
-        z += w+10
-    }
-    w = n % 10
-    n = n / 10
-    x = (z % 26) - 5
-    z = z / 26
-    if x != w {
-        z *= 26
-        z += w+14
-    }
-    w = n % 10
-    n = n / 10
-    x = (z % 26) - 16
-    z = z / 26
-    if x != w {
-        z *= 26
-        z += w+6
-    }
-    w = n % 10
-    n = n / 10
-    x = (z % 26) - 6
-    z = z / 26
-    if x != w {
-        z *= 26
-        z += w+5
-    }
-    return z == 0
-}
-
 type instr struct {
     op string
     a  int
@@ -236,11 +142,46 @@ func main() {
         effective = append(effective, in)
     }
 
-    //fmt.Println(validate(92499789699993)) equals true
-    // evaluated by hand
+    fmt.Println("func(V) :-")
+    fmt.Println("\tV = [A,B,C,D,E,F,G,H,I,J,K,L,M,N],")
+    fmt.Println("\t[W0, X0, Y0, Z0] ins 0..0,")
+    uses := [4]int{}
+    for _, in := range effective {
+        runeA := rune(in.a+87)
+        b := fmt.Sprintf("%d", in.value)
+        if !in.hasValue() {
+            b = fmt.Sprintf("%c%d", rune(in.b+87), uses[in.b])
+        }
+        switch in.op {
+        case "inp":
+            fmt.Printf("\tW%d #= %c,\n", uses[in.a]+1, rune(uses[in.a]+65))
+            uses[in.a] = uses[in.a] + 1
+        case "add":
+            fmt.Printf("\t%c%d #= %c%d + %s,\n", runeA, uses[in.a]+1, runeA, uses[in.a], b)
+            uses[in.a] = uses[in.a] + 1
+        case "mul":
+            fmt.Printf("\t%c%d #= %c%d * %s,\n", runeA, uses[in.a]+1, runeA, uses[in.a], b)
+            uses[in.a] = uses[in.a] + 1
+        case "div":
+            fmt.Printf("\t%c%d #= %c%d div %s,\n", runeA, uses[in.a]+1, runeA, uses[in.a], b)
+            uses[in.a] = uses[in.a] + 1
+        case "mod":
+            fmt.Printf("\t%c%d #= %c%d mod %s,\n", runeA, uses[in.a]+1, runeA, uses[in.a], b)
+            uses[in.a] = uses[in.a] + 1
+        case "eql":
+            next := fmt.Sprintf("%c%d", runeA, uses[in.a]+1)
+            fmt.Printf("\t( %c%d #= %s -> %s #= 1 ; %s #= 0 ),\n", runeA, uses[in.a], b, next, next)
+            uses[in.a] = uses[in.a] + 1
+        case "set":
+            fmt.Printf("\t%c%d #= %s,\n", runeA, uses[in.a]+1, b)
+            uses[in.a] = uses[in.a] + 1
+        }
+    }
+    fmt.Printf("\tZ%d #= 0.\n", uses[3])
+
+    // max value when generating all possibilities using prolog
     lib.WritePart1("%d", 39999698799429)
 
-    //fmt.Println(validate(71143112161181)) equals true
-    // evaluated by hand
+    // min value when generating all possibilities using prolog
     lib.WritePart2("%d", 18116121134117)
 }
